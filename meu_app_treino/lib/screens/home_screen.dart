@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../database/database_helper.dart';
 import '../theme/app_theme.dart';
 import 'equipamento_screen.dart';
+import 'body_selector_screen.dart';  
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -127,7 +128,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     final personalAtual = _personalEscolhido != 'nenhum' ? _personais[_personalEscolhido] : null;
-    final podeVerPersonal = _isPremium; // Apenas premium vê o personal
 
     return Scaffold(
       appBar: AppBar(
@@ -136,7 +136,29 @@ class _HomeScreenState extends State<HomeScreen> {
         backgroundColor: Colors.deepPurple,
         foregroundColor: Colors.white,
         actions: [
-          // Botão Premium / Personal
+          // Botão Body Selector
+          IconButton(
+            icon: Icon(Icons.accessibility_new, color: Colors.white),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => BodySelectorScreen()),
+              );
+            },
+            tooltip: 'Treinar por parte do corpo',
+          ),
+          // Botão Treino Personalizado (Equipamento)
+          IconButton(
+            icon: Icon(Icons.new_releases, color: Colors.white),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => EquipamentoScreen()),
+              );
+            },
+            tooltip: 'Montar Treino Personalizado',
+          ),
+          // Botão Premium
           IconButton(
             icon: Icon(_isPremium ? Icons.star : Icons.star_border),
             onPressed: _mostrarDialogPremium,
@@ -242,7 +264,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           
-          // LISTA DE EXERCÍCIOS - TODOS PODEM VER! (sem bloqueio)
+          // LISTA DE EXERCÍCIOS
           Expanded(
             child: _isLoading
                 ? Center(child: CircularProgressIndicator())
@@ -269,14 +291,12 @@ class _HomeScreenState extends State<HomeScreen> {
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
-                                      // TODOS veem a descrição do exercício
                                       Text(
                                         '📋 ${ex['descricao']}',
                                         style: TextStyle(fontSize: 14),
                                       ),
                                       SizedBox(height: 12),
                                       
-                                      // DICA DO PERSONAL - SÓ PARA PREMIUM
                                       if (_isPremium && personalAtual != null)
                                         Container(
                                           padding: EdgeInsets.all(12),
@@ -298,7 +318,6 @@ class _HomeScreenState extends State<HomeScreen> {
                                           ),
                                         ),
                                       
-                                      // Mensagem para não-premium (mostra o que está perdendo)
                                       if (!_isPremium)
                                         Padding(
                                           padding: EdgeInsets.only(top: 8),
@@ -361,23 +380,6 @@ class _HomeScreenState extends State<HomeScreen> {
           ],
         ),
         actions: [
-          // NOVO BOTÃO - Treino Personalizado
-  IconButton(
-    icon: Icon(Icons.new_releases, color: Colors.white),
-    onPressed: () {
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => EquipamentoScreen()),
-      );
-    },
-    tooltip: 'Montar Treino Personalizado',
-  ),
-  // Botão Premium existente
-  IconButton(
-    icon: Icon(_isPremium ? Icons.star : Icons.star_border),
-    onPressed: _mostrarDialogPremium,
-  ),
-],
           TextButton(
             onPressed: () => Navigator.pop(context),
             child: Text('Depois'),

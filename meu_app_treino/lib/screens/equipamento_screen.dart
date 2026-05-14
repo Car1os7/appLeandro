@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
+import 'musculo_screen.dart';
 
-class MusculoScreen extends StatelessWidget {
-  const MusculoScreen({Key? key}) : super(key: key);
+class EquipamentoScreen extends StatelessWidget {
+  const EquipamentoScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Escolha os músculos'),
+        title: Text('Selecione o equipamento'),
         backgroundColor: AppColors.primary,
       ),
       body: Center(
@@ -17,13 +18,16 @@ class MusculoScreen extends StatelessWidget {
           children: [
             Icon(Icons.fitness_center, size: 80, color: AppColors.primary),
             SizedBox(height: 20),
-            Text('Tela de Músculos - Em breve'),
+            Text('Tela de Equipamento - Em breve'),
             SizedBox(height: 20),
             ElevatedButton(
               onPressed: () {
-                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const MusculoScreen()),
+                );
               },
-              child: Text('Voltar'),
+              child: Text('Continuar'),
             ),
           ],
         ),
