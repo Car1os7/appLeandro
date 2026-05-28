@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import '../database/database_helper.dart';
 import '../theme/app_theme.dart';
 import 'equipamento_screen.dart';
-import 'body_selector_screen.dart';  
+import 'body_selector_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -131,14 +131,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Meus Treinos', style: TextStyle(fontWeight: FontWeight.bold)),
+        title: Text(AppTexts.homeTitle, style: TextStyle(fontWeight: FontWeight.w300, letterSpacing: 2)),
         centerTitle: true,
-        backgroundColor: Colors.deepPurple,
-        foregroundColor: Colors.white,
+        backgroundColor: AppColors.primary,
+        foregroundColor: AppColors.textLight,
         actions: [
           // Botão Body Selector
           IconButton(
-            icon: Icon(Icons.accessibility_new, color: Colors.white),
+            icon: Icon(Icons.accessibility_new, color: AppColors.textLight),
             onPressed: () {
               Navigator.push(
                 context,
@@ -147,9 +147,9 @@ class _HomeScreenState extends State<HomeScreen> {
             },
             tooltip: 'Treinar por parte do corpo',
           ),
-          // Botão Treino Personalizado (Equipamento)
+          // Botão Treino Personalizado
           IconButton(
-            icon: Icon(Icons.new_releases, color: Colors.white),
+            icon: Icon(Icons.new_releases, color: AppColors.textLight),
             onPressed: () {
               Navigator.push(
                 context,
@@ -160,7 +160,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           // Botão Premium
           IconButton(
-            icon: Icon(_isPremium ? Icons.star : Icons.star_border),
+            icon: Icon(_isPremium ? Icons.star : Icons.star_border, color: AppColors.accent),
             onPressed: _mostrarDialogPremium,
             tooltip: _isPremium ? 'Premium Ativo' : 'Assinar Premium',
           ),
@@ -174,8 +174,8 @@ class _HomeScreenState extends State<HomeScreen> {
               width: double.infinity,
               padding: EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: personalAtual['cor'].withOpacity(0.1),
-                border: Border(bottom: BorderSide(color: personalAtual['cor'].withOpacity(0.3))),
+                color: AppColors.primaryLight.withOpacity(0.3),
+                border: Border(bottom: BorderSide(color: AppColors.accent.withOpacity(0.3))),
               ),
               child: Row(
                 children: [
@@ -187,17 +187,17 @@ class _HomeScreenState extends State<HomeScreen> {
                       children: [
                         Text(
                           'Personal: $_personalEscolhido',
-                          style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16, color: personalAtual['cor']),
+                          style: TextStyle(fontWeight: FontWeight.w500, fontSize: 14, color: AppColors.accent),
                         ),
                         Text(
                           personalAtual['frase'],
-                          style: TextStyle(fontSize: 12),
+                          style: TextStyle(fontSize: 11, color: AppColors.textSecondary),
                         ),
                       ],
                     ),
                   ),
                   IconButton(
-                    icon: Icon(Icons.edit, size: 20),
+                    icon: Icon(Icons.edit, size: 18, color: AppColors.accent),
                     onPressed: _escolherPersonal,
                     tooltip: 'Trocar Personal',
                   ),
@@ -205,31 +205,31 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
 
-          // Banner para não-premium (incentivo)
+          // Banner para não-premium
           if (!_isPremium)
             Container(
               width: double.infinity,
               padding: EdgeInsets.all(12),
               decoration: BoxDecoration(
-                color: Colors.orange[50],
-                border: Border(bottom: BorderSide(color: Colors.orange[100]!)),
+                color: AppColors.primary.withOpacity(0.3),
+                border: Border(bottom: BorderSide(color: AppColors.accent.withOpacity(0.2))),
               ),
               child: Row(
                 children: [
-                  Icon(Icons.workspace_premium, color: Colors.orange, size: 24),
+                  Icon(Icons.workspace_premium, color: AppColors.accent, size: 22),
                   SizedBox(width: 12),
                   Expanded(
                     child: Text(
-                      'Assine Premium e ganhe um Personal Trainer exclusivo (Luva de Pedreiro, Bistecone ou Batista)!',
-                      style: TextStyle(fontSize: 12, color: Colors.orange[800]),
+                      'Assine Premium e ganhe um Personal Trainer exclusivo',
+                      style: TextStyle(fontSize: 11, color: AppColors.textSecondary),
                     ),
                   ),
                   ElevatedButton(
                     onPressed: _mostrarDialogPremium,
                     child: Text('ASSINAR'),
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.deepPurple,
-                      foregroundColor: Colors.white,
+                      backgroundColor: AppColors.primaryLight,
+                      foregroundColor: AppColors.textLight,
                       padding: EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                       minimumSize: Size(0, 30),
                     ),
@@ -241,8 +241,8 @@ class _HomeScreenState extends State<HomeScreen> {
           // Filtro por músculo
           if (!_isLoading && _musculos.isNotEmpty)
             Container(
-              height: 50,
-              padding: EdgeInsets.symmetric(horizontal: 8),
+              height: 45,
+              padding: EdgeInsets.symmetric(horizontal: 8, vertical: 4),
               child: ListView.builder(
                 scrollDirection: Axis.horizontal,
                 itemCount: _musculos.length,
@@ -255,9 +255,12 @@ class _HomeScreenState extends State<HomeScreen> {
                       label: Text(musculo),
                       selected: isSelected,
                       onSelected: (_) => _filtrarPorMusculo(musculo),
-                      backgroundColor: Colors.grey[200],
-                      selectedColor: Colors.deepPurple,
-                      labelStyle: TextStyle(color: isSelected ? Colors.white : Colors.black),
+                      backgroundColor: AppColors.background,
+                      selectedColor: AppColors.accent,
+                      labelStyle: TextStyle(
+                        color: isSelected ? Colors.white : AppColors.textSecondary,
+                        fontSize: 12,
+                      ),
                     ),
                   );
                 },
@@ -267,9 +270,9 @@ class _HomeScreenState extends State<HomeScreen> {
           // LISTA DE EXERCÍCIOS
           Expanded(
             child: _isLoading
-                ? Center(child: CircularProgressIndicator())
+                ? Center(child: CircularProgressIndicator(color: AppColors.accent))
                 : _exercicios.isEmpty
-                    ? Center(child: Text('Nenhum exercício para ${_musculoSelecionado}'))
+                    ? Center(child: Text('Nenhum exercício para ${_musculoSelecionado}', style: AppStyles.bodyMedium))
                     : ListView.builder(
                         padding: EdgeInsets.all(12),
                         itemCount: _exercicios.length,
@@ -277,14 +280,18 @@ class _HomeScreenState extends State<HomeScreen> {
                           final ex = _exercicios[index];
                           return Card(
                             margin: EdgeInsets.only(bottom: 12),
-                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+                            color: AppColors.cardBackground,
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                             child: ExpansionTile(
-                              leading: Icon(Icons.fitness_center, color: Colors.deepPurple),
+                              leading: Icon(Icons.fitness_center, color: AppColors.accent),
                               title: Text(
                                 ex['nome'],
-                                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                                style: TextStyle(fontWeight: FontWeight.w500, fontSize: 15, color: AppColors.textPrimary),
                               ),
-                              subtitle: Text('${ex['series']}x ${ex['repeticoes']} • ${ex['equipamento']}'),
+                              subtitle: Text(
+                                '${ex['series']}x ${ex['repeticoes']} • ${ex['equipamento']}',
+                                style: TextStyle(fontSize: 11, color: AppColors.textSecondary),
+                              ),
                               children: [
                                 Padding(
                                   padding: EdgeInsets.all(16),
@@ -293,7 +300,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                     children: [
                                       Text(
                                         '📋 ${ex['descricao']}',
-                                        style: TextStyle(fontSize: 14),
+                                        style: TextStyle(fontSize: 13, color: AppColors.textSecondary),
                                       ),
                                       SizedBox(height: 12),
                                       
@@ -301,8 +308,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                         Container(
                                           padding: EdgeInsets.all(12),
                                           decoration: BoxDecoration(
-                                            color: personalAtual['cor'].withOpacity(0.1),
-                                            borderRadius: BorderRadius.circular(12),
+                                            color: AppColors.primary.withOpacity(0.5),
+                                            borderRadius: BorderRadius.circular(10),
+                                            border: Border.all(color: AppColors.accent.withOpacity(0.3)),
                                           ),
                                           child: Row(
                                             children: [
@@ -310,8 +318,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                               SizedBox(width: 12),
                                               Expanded(
                                                 child: Text(
-                                                  '💬 Dica do ${_personalEscolhido}: ${personalAtual['dica']}',
-                                                  style: TextStyle(fontStyle: FontStyle.italic, fontSize: 13),
+                                                  '💬 Dica: ${personalAtual['dica']}',
+                                                  style: TextStyle(fontSize: 12, color: AppColors.accent),
                                                 ),
                                               ),
                                             ],
@@ -324,17 +332,17 @@ class _HomeScreenState extends State<HomeScreen> {
                                           child: Container(
                                             padding: EdgeInsets.all(8),
                                             decoration: BoxDecoration(
-                                              color: Colors.grey[100],
+                                              color: AppColors.primary.withOpacity(0.3),
                                               borderRadius: BorderRadius.circular(8),
                                             ),
                                             child: Row(
                                               children: [
-                                                Icon(Icons.star_border, size: 16, color: Colors.amber),
+                                                Icon(Icons.star_border, size: 14, color: AppColors.accent),
                                                 SizedBox(width: 8),
                                                 Expanded(
                                                   child: Text(
-                                                    '💪 Assine Premium para receber dicas motivacionais do seu Personal Trainer exclusivo!',
-                                                    style: TextStyle(fontSize: 11, color: Colors.grey[600]),
+                                                    'Assine Premium para receber dicas do seu Personal Trainer!',
+                                                    style: TextStyle(fontSize: 10, color: AppColors.textHint),
                                                   ),
                                                 ),
                                               ],
@@ -359,30 +367,31 @@ class _HomeScreenState extends State<HomeScreen> {
     showDialog(
       context: context,
       builder: (context) => AlertDialog(
+        backgroundColor: AppColors.cardBackground,
         title: Row(
           children: [
-            Icon(Icons.workspace_premium, color: Colors.amber),
+            Icon(Icons.workspace_premium, color: AppColors.accent),
             SizedBox(width: 8),
-            Text('Área Premium'),
+            Text('Área Premium', style: TextStyle(color: AppColors.textPrimary)),
           ],
         ),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('ASSINE PREMIUM e escolha seu PERSONAL TRAINER:', style: TextStyle(fontWeight: FontWeight.bold)),
+            Text('ASSINE PREMIUM e escolha seu PERSONAL TRAINER:', style: TextStyle(color: AppColors.textSecondary)),
             SizedBox(height: 16),
-            _buildPersonalOption('Luva de Pedreiro', '🧤', 'É RECEBA! Treino pesado e motivador'),
-            _buildPersonalOption('Bistecone', '🥩', 'Tá leve! Foco em carga e intensidade'),
-            _buildPersonalOption('Batista', '🏋️', 'Singela força! Disciplina e consistência'),
+            _buildPersonalOption('Luva de Pedreiro', '🧤', 'Treino pesado e motivador'),
+            _buildPersonalOption('Bistecone', '🥩', 'Foco em carga e intensidade'),
+            _buildPersonalOption('Batista', '🏋️', 'Disciplina e consistência'),
             SizedBox(height: 16),
-            Text('R\$ 29,90/mês', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold, color: Colors.deepPurple)),
+            Text('R\$ 29,90/mês', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.accent)),
           ],
         ),
         actions: [
           TextButton(
             onPressed: () => Navigator.pop(context),
-            child: Text('Depois'),
+            child: Text('Depois', style: TextStyle(color: AppColors.textSecondary)),
           ),
           ElevatedButton(
             onPressed: () async {
@@ -394,11 +403,14 @@ class _HomeScreenState extends State<HomeScreen> {
               });
               _escolherPersonal();
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text('🎉 Premium ativado! Agora escolha seu Personal!'), backgroundColor: Colors.green),
+                SnackBar(content: Text('🎉 Premium ativado!'), backgroundColor: AppColors.success),
               );
             },
             child: Text('ASSINAR AGORA'),
-            style: ElevatedButton.styleFrom(backgroundColor: Colors.deepPurple),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: AppColors.accent,
+              foregroundColor: Colors.white,
+            ),
           ),
         ],
       ),
@@ -416,8 +428,8 @@ class _HomeScreenState extends State<HomeScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(nome, style: TextStyle(fontWeight: FontWeight.bold)),
-                Text(descricao, style: TextStyle(fontSize: 12)),
+                Text(nome, style: TextStyle(fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+                Text(descricao, style: TextStyle(fontSize: 11, color: AppColors.textSecondary)),
               ],
             ),
           ),

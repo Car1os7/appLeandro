@@ -13,7 +13,7 @@ class MyApp extends StatelessWidget {
       title: AppTexts.appName,
       theme: AppTheme.lightTheme,
       debugShowCheckedModeBanner: false,
-      home: LandingPage(),  // ← Agora o LandingPage existe!
+      home: LandingPage(),
     );
   }
 }
