@@ -23,13 +23,11 @@ O app foi pensado para resolver um problema comum: muitas pessoas querem começa
 - 🎯 **Landing Page** com informações sobre vantagens e desvantagens da prática de exercícios
 - 💫 **Splash Screen** animada para melhor experiência do usuário
 - 📋 **Lista de Exercícios** com mais de 30 exercícios organizados por músculo
-- 🔍 **Filtros** por equipamento e grupo muscular
 - ⭐ **Sistema Premium** com personal trainers exclusivos:
   - 🧤 **Luva de Pedreiro** - Treino pesado e motivador
   - 🥩 **Bistecone** - Foco em carga e intensidade
   - 🏋️ **Batista** - Disciplina e consistência
 - 🧍 **Body Part Selector** - Selecione a parte do corpo no desenho anatômico
-- 🎯 **Treino Personalizado** - Monte seu treino baseado no equipamento disponível
 - 💾 **Banco de Dados Local** com SharedPreferences
 - 🌓 **Tema Centralizado** - Fácil customização de cores e textos
 
