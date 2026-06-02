@@ -1,8 +1,16 @@
-import 'dart:async';
-import 'dart:math';
+// ============================================
+// 📦 IMPORTAÇÕES NECESSÁRIAS
+// ============================================
+import 'dart:async';      // Para usar Timer (contagem de tempo)
+import 'dart:math';       // Para números aleatórios (Random)
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'home_screen.dart';
+import 'package:flutter/services.dart';  // Para configurar tela cheia
+import 'home_screen.dart';  // Tela para onde vai depois do carregamento
+
+// ============================================
+// 📺 TELA DE CARREGAMENTO ESTILO GLITCH
+// Mostra: estática na tela, glitch, porcentagem (0% → 25% → 85% → 99% → 100%)
+// ============================================
 
 class TransitionDMCScreen extends StatefulWidget {
   const TransitionDMCScreen({super.key});
@@ -13,53 +21,62 @@ class TransitionDMCScreen extends StatefulWidget {
 
 class _TransitionDMCScreenState extends State<TransitionDMCScreen>
     with TickerProviderStateMixin {
-  late Timer _timer;
-  int _progress = 0;
-  final List<int> _progressSteps = [0, 25, 85, 99, 100];
-  int _stepIndex = 0;
   
-  final Random _random = Random();
-  final List<GlitchLine> _glitchLines = [];
-  final List<StaticParticle> _staticParticles = [];
+  // ========== ⏱️ VARIÁVEIS DE PROGRESSO ==========
+  late Timer _timer;                    // Timer que controla os passos
+  int _progress = 0;                    // Percentual atual (0 a 100)
+  final List<int> _progressSteps = [0, 25, 85, 99, 100];  // Passos do progresso
+  int _stepIndex = 0;                   // Índice do passo atual
   
-  bool _showStatic = true;
-  bool _isGlitching = false;
-  double _glitchOffset = 0;
+  // ========== 🎨 EFEITOS VISUAIS ==========
+  final Random _random = Random();       // Gerador de números aleatórios
+  final List<GlitchLine> _glitchLines = [];     // Lista de linhas de glitch
+  final List<StaticParticle> _staticParticles = [];  // Lista de partículas de estática
+  
+  bool _showStatic = true;               // Mostrar estática?
+  bool _isGlitching = false;             // Está em modo glitch?
+  double _glitchOffset = 0;              // Deslocamento do texto no glitch
 
+  // ============================================
+  // 🚀 INICIALIZA QUANDO A TELA ABRE
+  // ============================================
   @override
   void initState() {
     super.initState();
+    
+    // Configura tela cheia (remove barras)
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
 
-    // Gerar linhas de glitch
+    // 🔲 CRIA LINHAS DE GLITCH (30 linhas horizontais aleatórias)
     for (int i = 0; i < 30; i++) {
       _glitchLines.add(GlitchLine(
-        y: _random.nextDouble(),
-        height: 0.02 + _random.nextDouble() * 0.05,
-        intensity: 0.3 + _random.nextDouble() * 0.7,
+        y: _random.nextDouble(),                    // Posição vertical aleatória
+        height: 0.02 + _random.nextDouble() * 0.05,  // Altura da linha
+        intensity: 0.3 + _random.nextDouble() * 0.7, // Intensidade do glitch
       ));
     }
 
-    // Gerar partículas de estática
+    // ✨ CRIA PARTÍCULAS DE ESTÁTICA (150 pontos brancos aleatórios)
     for (int i = 0; i < 150; i++) {
       _staticParticles.add(StaticParticle(
-        x: _random.nextDouble(),
-        y: _random.nextDouble(),
-        size: 1 + _random.nextDouble() * 3,
+        x: _random.nextDouble(),    // Posição X aleatória
+        y: _random.nextDouble(),    // Posição Y aleatória
+        size: 1 + _random.nextDouble() * 3,  // Tamanho da partícula
       ));
     }
 
-    // Simular progresso
+    // ⏱️ TIMER: A CADA 800ms, AVANÇA PARA O PRÓXIMO PASSO
     _timer = Timer.periodic(const Duration(milliseconds: 800), (timer) {
       if (_stepIndex < _progressSteps.length - 1) {
+        // Ainda não chegou no 100%
         _stepIndex++;
         setState(() {
-          _progress = _progressSteps[_stepIndex];
-          _isGlitching = true;
-          _glitchOffset = 5 + _random.nextDouble() * 15;
+          _progress = _progressSteps[_stepIndex];   // Atualiza porcentagem
+          _isGlitching = true;                      // Ativa efeito de glitch
+          _glitchOffset = 5 + _random.nextDouble() * 15;  // Desloca texto
         });
         
-        // Efeito de glitch rápido
+        // ⚡ EFEITO DE GLITCH RÁPIDO (desativa após 100ms)
         Future.delayed(Duration(milliseconds: 100), () {
           if (mounted) {
             setState(() {
@@ -69,6 +86,7 @@ class _TransitionDMCScreenState extends State<TransitionDMCScreen>
           }
         });
       } else {
+        // ✅ COMPLETOU 100% - Cancela timer e vai para HomeScreen
         timer.cancel();
         Future.delayed(const Duration(milliseconds: 500), () {
           if (mounted) {
@@ -82,13 +100,19 @@ class _TransitionDMCScreenState extends State<TransitionDMCScreen>
     });
   }
 
+  // ============================================
+  // 🧹 LIMPA RECURSOS QUANDO A TELA FECHA
+  // ============================================
   @override
   void dispose() {
-    _timer.cancel();
+    _timer.cancel();  // Cancela o timer para não continuar rodando
     SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
     super.dispose();
   }
 
+  // ============================================
+  // 🎨 CONSTRÓI A TELA
+  // ============================================
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
@@ -97,15 +121,16 @@ class _TransitionDMCScreenState extends State<TransitionDMCScreen>
       backgroundColor: Colors.black,
       body: Stack(
         children: [
-          // Fundo preto com estática
+          // ========== 🖤 FUNDO PRETO ==========
           Container(
             width: double.infinity,
             height: double.infinity,
             color: Colors.black,
           ),
 
-          // Estática (partículas brancas)
+          // ========== ✨ ESTÁTICA (PARTÍCULAS BRANCAS PISCANDO) ==========
           ..._staticParticles.map((particle) {
+            // Opacidade aleatória para simular estática
             final opacity = _showStatic ? 0.3 + _random.nextDouble() * 0.2 : 0.0;
             return Positioned(
               left: particle.x * screenSize.width,
@@ -122,7 +147,7 @@ class _TransitionDMCScreenState extends State<TransitionDMCScreen>
             );
           }),
 
-          // Linhas de glitch horizontais
+          // ========== 📺 LINHAS DE GLITCH (HORIZONTAIS) ==========
           ..._glitchLines.map((line) {
             final intensity = _isGlitching ? line.intensity : line.intensity * 0.3;
             return Positioned(
@@ -136,13 +161,13 @@ class _TransitionDMCScreenState extends State<TransitionDMCScreen>
             );
           }),
 
-          // Texto com glitch
+          // ========== 📝 TEXTO "CARREGANDO..." COM EFEITO GLITCH ==========
           Center(
             child: Transform.translate(
-              offset: Offset(_glitchOffset, 0),
+              offset: Offset(_glitchOffset, 0),  // Desloca durante o glitch
               child: Stack(
                 children: [
-                  // Camada vermelha (glitch)
+                  // Camada VERMELHA (deslocada para esquerda)
                   Transform.translate(
                     offset: Offset(-3, 0),
                     child: Text(
@@ -155,7 +180,7 @@ class _TransitionDMCScreenState extends State<TransitionDMCScreen>
                       ),
                     ),
                   ),
-                  // Camada azul (glitch)
+                  // Camada AZUL (deslocada para direita)
                   Transform.translate(
                     offset: Offset(3, 0),
                     child: Text(
@@ -168,7 +193,7 @@ class _TransitionDMCScreenState extends State<TransitionDMCScreen>
                       ),
                     ),
                   ),
-                  // Texto principal
+                  // Texto BRANCO (principal)
                   Text(
                     'CARREGANDO...',
                     style: TextStyle(
@@ -183,7 +208,7 @@ class _TransitionDMCScreenState extends State<TransitionDMCScreen>
             ),
           ),
 
-          // Percentual de carregamento
+          // ========== 📊 PERCENTUAL E BARRA DE PROGRESSO ==========
           Positioned(
             bottom: 100,
             left: 0,
@@ -191,7 +216,7 @@ class _TransitionDMCScreenState extends State<TransitionDMCScreen>
             child: Center(
               child: Column(
                 children: [
-                  // Número do percentual
+                  // 🔢 NÚMERO DA PORCENTAGEM (com animação)
                   TweenAnimationBuilder(
                     tween: IntTween(begin: 0, end: _progress),
                     duration: const Duration(milliseconds: 500),
@@ -202,7 +227,7 @@ class _TransitionDMCScreenState extends State<TransitionDMCScreen>
                           fontSize: 48,
                           fontWeight: FontWeight.bold,
                           color: _progress >= 85 
-                              ? Colors.green[400] 
+                              ? Colors.green[400]   // Verde quando perto de 100%
                               : Colors.white,
                           shadows: [
                             Shadow(
@@ -216,7 +241,7 @@ class _TransitionDMCScreenState extends State<TransitionDMCScreen>
                   ),
                   const SizedBox(height: 20),
                   
-                  // Barra de progresso
+                  // 📊 BARRA DE PROGRESSO
                   Container(
                     width: 250,
                     height: 6,
@@ -238,7 +263,7 @@ class _TransitionDMCScreenState extends State<TransitionDMCScreen>
                   
                   const SizedBox(height: 20),
                   
-                  // Texto de status
+                  // 📝 TEXTO DE STATUS (muda conforme o progresso)
                   Text(
                     _getStatusText(),
                     style: TextStyle(
@@ -252,7 +277,8 @@ class _TransitionDMCScreenState extends State<TransitionDMCScreen>
             ),
           ),
 
-          // Efeito de scanline (opcional)
+          // ========== 📺 EFEITO DE SCANLINE (opcional) ==========
+          // Precisa de uma imagem assets/scanlines.png para funcionar
           if (_isGlitching)
             IgnorePointer(
               child: Opacity(
@@ -275,6 +301,9 @@ class _TransitionDMCScreenState extends State<TransitionDMCScreen>
     );
   }
 
+  // ============================================
+  // 📝 RETORNA O TEXTO DE STATUS BASEADO NO PROGRESSO
+  // ============================================
   String _getStatusText() {
     if (_progress >= 99) return 'FINALIZANDO...';
     if (_progress >= 85) return 'QUASE LÁ...';
@@ -284,11 +313,13 @@ class _TransitionDMCScreenState extends State<TransitionDMCScreen>
   }
 }
 
-// Classe para linhas de glitch
+// ============================================
+// 🔲 CLASSE DAS LINHAS DE GLITCH
+// ============================================
 class GlitchLine {
-  final double y;
-  final double height;
-  final double intensity;
+  final double y;          // Posição vertical (0 a 1)
+  final double height;     // Altura da linha
+  final double intensity;  // Intensidade (0 a 1)
   
   GlitchLine({
     required this.y,
@@ -297,11 +328,13 @@ class GlitchLine {
   });
 }
 
-// Classe para partículas de estática
+// ============================================
+// ✨ CLASSE DAS PARTÍCULAS DE ESTÁTICA
+// ============================================
 class StaticParticle {
-  final double x;
-  final double y;
-  final double size;
+  final double x;          // Posição horizontal (0 a 1)
+  final double y;          // Posição vertical (0 a 1)
+  final double size;       // Tamanho da partícula
   
   StaticParticle({
     required this.x,

@@ -1,22 +1,38 @@
+// ============================================
+// 📦 IMPORTAÇÕES NECESSÁRIAS
+// ============================================
 import 'package:flutter/material.dart';
-import '../database/database_helper.dart';
-import '../theme/app_theme.dart';
-import 'equipamento_screen.dart';
-import 'body_selector_screen.dart';
+import '../database/database_helper.dart';    // Banco de dados (exercícios, premium)
+import '../theme/app_theme.dart';             // Cores e estilos do app
+import 'body_selector_screen.dart';           // Tela do seletor de corpo (SVG)
+
+// ============================================
+// 🏋️ TELA PRINCIPAL - LISTA DE EXERCÍCIOS
+// Mostra os exercícios, permite filtrar por músculo e tem sistema premium
+// ============================================
 
 class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
   @override
-  _HomeScreenState createState() => _HomeScreenState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  List<Map<String, dynamic>> _exercicios = [];
-  List<String> _musculos = [];
-  String _musculoSelecionado = 'Peito';
-  bool _isPremium = false;
-  bool _isLoading = true;
-  String _personalEscolhido = 'nenhum';
+  // ============================================
+  // 📊 VARIÁVEIS DE ESTADO
+  // ============================================
+  List<Map<String, dynamic>> _exercicios = [];  // Lista de exercícios atuais
+  List<String> _musculos = [];                   // Lista de músculos para os filtros
+  String _musculoSelecionado = 'Peito';         // Músculo atualmente selecionado
+  bool _isPremium = false;                       // Usuário é premium?
+  bool _isLoading = true;                        // Está carregando?
+  String _personalEscolhido = 'nenhum';          // Personal trainer escolhido
 
+  // ============================================
+  // 🧑‍🏫 LISTA DE PERSONAIS TREINADORES (3 opções)
+  // Cada um tem: ícone, frase, cor e dica motivacional
+  // ============================================
   final Map<String, Map<String, dynamic>> _personais = {
     'Luva de Pedreiro': {
       'icone': '🧤',
@@ -38,18 +54,24 @@ class _HomeScreenState extends State<HomeScreen> {
     },
   };
 
+  // ============================================
+  // 🚀 INICIALIZA - CARREGA OS DADOS QUANDO A TELA ABRE
+  // ============================================
   @override
   void initState() {
     super.initState();
-    _carregarDados();
+    _carregarDados();  // Busca exercícios no banco
   }
 
+  // ============================================
+  // 📥 CARREGA OS DADOS DO BANCO (exercícios, músculos, premium, personal)
+  // ============================================
   Future<void> _carregarDados() async {
     final db = DatabaseHelper();
-    final musculos = await db.getMusculos();
-    final premium = await db.isPremium();
-    final personal = await db.getPersonalEscolhido();
-    final exercicios = await db.getExerciciosPorMusculo(_musculoSelecionado);
+    final musculos = await db.getMusculos();                     // Lista de músculos
+    final premium = await db.isPremium();                        // Status premium
+    final personal = await db.getPersonalEscolhido();            // Personal escolhido
+    final exercicios = await db.getExerciciosPorMusculo(_musculoSelecionado);  // Exercícios do músculo
 
     setState(() {
       _musculos = musculos;
@@ -60,6 +82,9 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  // ============================================
+  // 🔍 FILTRA EXERCÍCIOS POR MÚSCULO (quando clica nos botões)
+  // ============================================
   Future<void> _filtrarPorMusculo(String musculo) async {
     setState(() {
       _musculoSelecionado = musculo;
@@ -75,6 +100,9 @@ class _HomeScreenState extends State<HomeScreen> {
     });
   }
 
+  // ============================================
+  // 🧑‍🏫 ABRE DIÁLOGO PARA ESCOLHER O PERSONAL TRAINER
+  // ============================================
   Future<void> _escolherPersonal() async {
     final escolhido = await showDialog<String>(
       context: context,
@@ -83,6 +111,7 @@ class _HomeScreenState extends State<HomeScreen> {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+            // Opção 1: Luva de Pedreiro
             ListTile(
               leading: Text('🧤', style: TextStyle(fontSize: 30)),
               title: Text('Luva de Pedreiro'),
@@ -90,6 +119,7 @@ class _HomeScreenState extends State<HomeScreen> {
               onTap: () => Navigator.pop(context, 'Luva de Pedreiro'),
             ),
             Divider(),
+            // Opção 2: Bistecone
             ListTile(
               leading: Text('🥩', style: TextStyle(fontSize: 30)),
               title: Text('Bistecone'),
@@ -97,6 +127,7 @@ class _HomeScreenState extends State<HomeScreen> {
               onTap: () => Navigator.pop(context, 'Bistecone'),
             ),
             Divider(),
+            // Opção 3: Batista
             ListTile(
               leading: Text('🏋️', style: TextStyle(fontSize: 30)),
               title: Text('Batista'),
@@ -108,6 +139,7 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
 
+    // Se o usuário escolheu algum, salva no banco
     if (escolhido != null) {
       final db = DatabaseHelper();
       await db.setPersonalEscolhido(escolhido);
@@ -115,6 +147,7 @@ class _HomeScreenState extends State<HomeScreen> {
         _personalEscolhido = escolhido;
       });
       
+      // Mostra mensagem de confirmação
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text('🎉 Agora você treina com ${_personais[escolhido]!['icone']} ${escolhido}!'),
@@ -125,18 +158,22 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  // ============================================
+  // 🎨 CONSTRÓI A TELA
+  // ============================================
   @override
   Widget build(BuildContext context) {
     final personalAtual = _personalEscolhido != 'nenhum' ? _personais[_personalEscolhido] : null;
 
     return Scaffold(
+      // ========== BARRA SUPERIOR (APP BAR) ==========
       appBar: AppBar(
-        title: Text(AppTexts.homeTitle, style: TextStyle(fontWeight: FontWeight.w300, letterSpacing: 2)),
+        title: Text('MEUS TREINOS', style: TextStyle(fontWeight: FontWeight.bold, letterSpacing: 2)),
         centerTitle: true,
-        backgroundColor: AppColors.primary,
+        backgroundColor: AppColors.primary,      // Cor do tema
         foregroundColor: AppColors.textLight,
         actions: [
-          // Botão Body Selector
+          // 🧍 BOTÃO DO SELETOR DE CORPO (Body Selector)
           IconButton(
             icon: Icon(Icons.accessibility_new, color: AppColors.textLight),
             onPressed: () {
@@ -147,18 +184,7 @@ class _HomeScreenState extends State<HomeScreen> {
             },
             tooltip: 'Treinar por parte do corpo',
           ),
-          // Botão Treino Personalizado
-          IconButton(
-            icon: Icon(Icons.new_releases, color: AppColors.textLight),
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => EquipamentoScreen()),
-              );
-            },
-            tooltip: 'Montar Treino Personalizado',
-          ),
-          // Botão Premium
+          // ⭐ BOTÃO PREMIUM (estrela)
           IconButton(
             icon: Icon(_isPremium ? Icons.star : Icons.star_border, color: AppColors.accent),
             onPressed: _mostrarDialogPremium,
@@ -166,9 +192,11 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
         ],
       ),
+      
+      // ========== CORPO DA TELA ==========
       body: Column(
         children: [
-          // Banner do Personal (SÓ PARA PREMIUM)
+          // ========== BANNER DO PERSONAL (só aparece se for premium e tiver personal escolhido) ==========
           if (_isPremium && personalAtual != null)
             Container(
               width: double.infinity,
@@ -196,6 +224,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       ],
                     ),
                   ),
+                  // Botão para trocar de personal
                   IconButton(
                     icon: Icon(Icons.edit, size: 18, color: AppColors.accent),
                     onPressed: _escolherPersonal,
@@ -205,7 +234,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
 
-          // Banner para não-premium
+          // ========== BANNER PARA NÃO-PREMIUM (incentiva a assinar) ==========
           if (!_isPremium)
             Container(
               width: double.infinity,
@@ -238,7 +267,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           
-          // Filtro por músculo
+          // ========== FILTRO POR MÚSCULO (botões horizontais) ==========
           if (!_isLoading && _musculos.isNotEmpty)
             Container(
               height: 45,
@@ -267,7 +296,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
           
-          // LISTA DE EXERCÍCIOS
+          // ========== LISTA DE EXERCÍCIOS ==========
           Expanded(
             child: _isLoading
                 ? Center(child: CircularProgressIndicator(color: AppColors.accent))
@@ -282,7 +311,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             margin: EdgeInsets.only(bottom: 12),
                             color: AppColors.cardBackground,
                             shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                            child: ExpansionTile(
+                            child: ExpansionTile(  // Expande ao clicar
                               leading: Icon(Icons.fitness_center, color: AppColors.accent),
                               title: Text(
                                 ex['nome'],
@@ -298,12 +327,14 @@ class _HomeScreenState extends State<HomeScreen> {
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.start,
                                     children: [
+                                      // Descrição do exercício
                                       Text(
                                         '📋 ${ex['descricao']}',
                                         style: TextStyle(fontSize: 13, color: AppColors.textSecondary),
                                       ),
                                       SizedBox(height: 12),
                                       
+                                      // Dica do Personal (só para premium)
                                       if (_isPremium && personalAtual != null)
                                         Container(
                                           padding: EdgeInsets.all(12),
@@ -326,6 +357,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                           ),
                                         ),
                                       
+                                      // Mensagem para não-premium (mostra o que está perdendo)
                                       if (!_isPremium)
                                         Padding(
                                           padding: EdgeInsets.only(top: 8),
@@ -363,6 +395,9 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  
+  // ⭐ DIÁLOGO DE ASSINATURA PREMIUM
+
   void _mostrarDialogPremium() {
     showDialog(
       context: context,
@@ -397,11 +432,11 @@ class _HomeScreenState extends State<HomeScreen> {
             onPressed: () async {
               Navigator.pop(context);
               final db = DatabaseHelper();
-              await db.updatePremium(true);
+              await db.updatePremium(true);       // Ativa premium no banco
               setState(() {
                 _isPremium = true;
               });
-              _escolherPersonal();
+              _escolherPersonal();                // Abre escolha do personal
               ScaffoldMessenger.of(context).showSnackBar(
                 SnackBar(content: Text('🎉 Premium ativado!'), backgroundColor: AppColors.success),
               );
@@ -417,6 +452,9 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
+  // ============================================
+  // 🧑‍🏫 CONSTRÓI AS OPÇÕES DE PERSONAL (icone, nome, descrição)
+  // ============================================
   Widget _buildPersonalOption(String nome, String icone, String descricao) {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 6),

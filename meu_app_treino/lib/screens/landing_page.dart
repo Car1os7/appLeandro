@@ -1,6 +1,14 @@
+// ============================================
+// 📦 IMPORTAÇÕES NECESSÁRIAS
+// ============================================
 import 'package:flutter/material.dart';
-import '../theme/app_theme.dart';
-import 'transition_dmc_screen.dart';
+import '../theme/app_theme.dart';           // Cores, textos e estilos do app
+import 'transition_dmc_screen.dart';        // Tela de carregamento interativa
+
+// ============================================
+// 🏠 TELA INICIAL (LANDING PAGE)
+// Mostra benefícios, vantagens, desvantagens e botão para começar
+// ============================================
 
 class LandingPage extends StatelessWidget {
   @override
@@ -8,31 +16,31 @@ class LandingPage extends StatelessWidget {
     return Scaffold(
       body: Stack(
         children: [
-          // Fundo com gradiente otimizado
+          // ========== 🔴 FUNDO COM GRADIENTE ==========
           Container(
             decoration: BoxDecoration(
-              gradient: AppColors.landingGradient,
+              gradient: AppColors.landingGradient,  // Gradiente do tema
             ),
           ),
           
-          // Conteúdo
+          // ========== 📜 CONTEÚDO ROLÁVEL ==========
           CustomScrollView(
             slivers: [
-              // AppBar
+              // ========== 🎨 CABEÇALHO (APP BAR EXPANDIDA) ==========
               SliverAppBar(
-                expandedHeight: 320,
+                expandedHeight: 320,      // Altura quando expandido
                 floating: false,
-                pinned: true,
+                pinned: true,             // Fica fixo no topo
                 backgroundColor: Colors.transparent,
                 elevation: 0,
                 flexibleSpace: FlexibleSpaceBar(
                   title: Text(
-                    AppTexts.appName,
+                    AppTexts.appName,     // Nome do app (do tema)
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.bold,
                       letterSpacing: 2,
-                      color: AppColors.accent,
+                      color: AppColors.accent,  // Cor dourada
                     ),
                   ),
                   centerTitle: true,
@@ -43,7 +51,7 @@ class LandingPage extends StatelessWidget {
                         end: Alignment.bottomCenter,
                         colors: [
                           Colors.black.withOpacity(0.9),
-                          AppColors.primary.withOpacity(0.3),
+                          AppColors.primary.withOpacity(0.3),  // Vermelho suave
                           Colors.black.withOpacity(0.9),
                         ],
                       ),
@@ -52,13 +60,13 @@ class LandingPage extends StatelessWidget {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          // Ícone principal
+                          // 🏋️ Ícone principal (halter)
                           Container(
                             padding: EdgeInsets.all(20),
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               border: Border.all(
-                                color: AppColors.accent,
+                                color: AppColors.accent,  // Borda dourada
                                 width: 3,
                               ),
                               boxShadow: [
@@ -72,10 +80,12 @@ class LandingPage extends StatelessWidget {
                             child: Icon(
                               Icons.fitness_center,
                               size: 65,
-                              color: AppColors.primary,
+                              color: AppColors.primary,  // Vermelho
                             ),
                           ),
                           SizedBox(height: 20),
+                          
+                          // 📝 Títulos principais
                           Text(
                             "SUA JORNADA",
                             style: TextStyle(
@@ -116,20 +126,21 @@ class LandingPage extends StatelessWidget {
                 ),
               ),
               
+              // ========== 📋 CONTEÚDO PRINCIPAL ==========
               SliverToBoxAdapter(
                 child: Padding(
                   padding: AppStyles.screenPadding,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // Frase motivacional
+                      // 💬 Frase motivacional
                       _buildQuoteCard(
                         '"A dor que você sente hoje será a força que você terá amanhã."',
                       ),
                       
                       SizedBox(height: 30),
                       
-                      // ========== SEÇÃO 1: VANTAGENS ==========
+                      // ========== 🔥 SEÇÃO 1: VANTAGENS ==========
                       _buildSectionTitle('🔥 VANTAGENS', Icons.emoji_events),
                       SizedBox(height: 12),
                       
@@ -156,7 +167,7 @@ class LandingPage extends StatelessWidget {
                       
                       SizedBox(height: 30),
                       
-                      // ========== SEÇÃO 2: SOBRE A ACADEMIA ==========
+                      // ========== 🏆 SEÇÃO 2: SOBRE A ACADEMIA ==========
                       _buildSectionTitle('🏆 SOBRE A ACADEMIA', Icons.business),
                       SizedBox(height: 12),
                       
@@ -191,6 +202,7 @@ class LandingPage extends StatelessWidget {
                               style: AppStyles.bodyMedium,
                             ),
                             SizedBox(height: 16),
+                            
                             Text(
                               'NOSSA MISSÃO',
                               style: TextStyle(
@@ -212,6 +224,7 @@ class LandingPage extends StatelessWidget {
                               style: AppStyles.bodyMedium,
                             ),
                             SizedBox(height: 16),
+                            
                             Text(
                               'O QUE OFERECEMOS',
                               style: TextStyle(
@@ -233,7 +246,7 @@ class LandingPage extends StatelessWidget {
                       
                       SizedBox(height: 30),
                       
-                      // ========== SEÇÃO 3: REFERÊNCIAS ==========
+                      // ========== ⭐ SEÇÃO 3: REFERÊNCIAS (INFLUENCIADORES) ==========
                       _buildSectionTitle('⭐ REFERÊNCIAS', Icons.people),
                       SizedBox(height: 12),
                       
@@ -264,7 +277,7 @@ class LandingPage extends StatelessWidget {
                       
                       SizedBox(height: 20),
                       
-                      // Dica extra
+                      // 💡 Dica extra
                       Container(
                         width: double.infinity,
                         padding: EdgeInsets.all(16),
@@ -289,7 +302,7 @@ class LandingPage extends StatelessWidget {
                       
                       SizedBox(height: 30),
                       
-                      // ========== SEÇÃO 4: O PREÇO DA OMISSÃO ==========
+                      // ========== ⚠️ SEÇÃO 4: O PREÇO DA OMISSÃO ==========
                       _buildSectionTitle('⚠️ O PREÇO DA OMISSÃO', Icons.warning_amber),
                       SizedBox(height: 12),
                       
@@ -308,12 +321,12 @@ class LandingPage extends StatelessWidget {
                       
                       SizedBox(height: 30),
                       
-                      // ========== BOTÃO FINAL ==========
+                      // ========== 🔘 BOTÃO FINAL ==========
                       Container(
                         width: double.infinity,
                         padding: EdgeInsets.all(25),
                         decoration: BoxDecoration(
-                          gradient: AppColors.premiumGradient,
+                          gradient: AppColors.premiumGradient,  // Gradiente dourado
                           borderRadius: BorderRadius.circular(20),
                           boxShadow: [
                             BoxShadow(
@@ -349,6 +362,7 @@ class LandingPage extends StatelessWidget {
                               width: double.infinity,
                               child: ElevatedButton.icon(
                                 onPressed: () {
+                                  // Vai para a tela de carregamento interativo
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -358,7 +372,7 @@ class LandingPage extends StatelessWidget {
                                 },
                                 icon: Icon(Icons.arrow_forward, size: 22),
                                 label: Text(
-                                  AppTexts.enterButton,
+                                  AppTexts.enterButton,  // "AWAKEN YOUR POWER"
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
@@ -383,6 +397,7 @@ class LandingPage extends StatelessWidget {
                       
                       SizedBox(height: 40),
                       
+                      // 🏆 Frase final
                       Center(
                         child: Text(
                           '🏆 "O único treino ruim é o que não foi feito." 🏆',
@@ -407,8 +422,11 @@ class LandingPage extends StatelessWidget {
     );
   }
 
-  // ========== WIDGETS AUXILIARES ==========
+  // ============================================
+  // 🛠️ WIDGETS AUXILIARES (COMPONENTES REUTILIZÁVEIS)
+  // ============================================
 
+  // 📌 Título das seções (ex: "🔥 VANTAGENS")
   Widget _buildSectionTitle(String titulo, IconData icone) {
     return Row(
       children: [
@@ -427,6 +445,7 @@ class LandingPage extends StatelessWidget {
     );
   }
 
+  // 💬 Card de frase motivacional
   Widget _buildQuoteCard(String quote) {
     return Container(
       width: double.infinity,
@@ -447,6 +466,7 @@ class LandingPage extends StatelessWidget {
     );
   }
 
+  // ✅ Card de benefício/vantagem
   Widget _buildBenefitCard({
     required String titulo,
     required String descricao,
@@ -460,6 +480,7 @@ class LandingPage extends StatelessWidget {
       ),
       child: Row(
         children: [
+          // Ícone com fundo dourado
           Container(
             padding: EdgeInsets.all(10),
             decoration: BoxDecoration(
@@ -494,6 +515,7 @@ class LandingPage extends StatelessWidget {
     );
   }
 
+  // ⚠️ Card de aviso/desvantagem
   Widget _buildWarningCard({
     required String titulo,
     required String descricao,
@@ -535,6 +557,7 @@ class LandingPage extends StatelessWidget {
     );
   }
 
+  // 📋 Item da lista "O que oferecemos"
   Widget _buildOfferItem(String texto) {
     return Padding(
       padding: EdgeInsets.only(bottom: 6),
@@ -545,6 +568,7 @@ class LandingPage extends StatelessWidget {
     );
   }
 
+  // 🌟 Card de influenciador/referência
   Widget _buildInfluencerCard({
     required String nome,
     required String icone,
@@ -559,6 +583,7 @@ class LandingPage extends StatelessWidget {
       ),
       child: Row(
         children: [
+          // Ícone circular do influenciador
           Container(
             width: 50,
             height: 50,
