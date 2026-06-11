@@ -2,8 +2,9 @@
 // 📦 IMPORTAÇÕES NECESSÁRIAS
 // ============================================
 import 'package:flutter/material.dart';
-import '../theme/app_theme.dart';           // Cores, textos e estilos do app
-import 'transition_dmc_screen.dart';        // Tela de carregamento interativa
+import 'package:url_launcher/url_launcher.dart';
+import '../theme/app_theme.dart';
+import 'transition_dmc_screen.dart';
 
 // ============================================
 // 🏠 TELA INICIAL (LANDING PAGE)
@@ -11,6 +12,19 @@ import 'transition_dmc_screen.dart';        // Tela de carregamento interativa
 // ============================================
 
 class LandingPage extends StatelessWidget {
+  
+  // ============================================
+  // 🔗 FUNÇÃO PARA ABRIR LINKS
+  // ============================================
+  Future<void> _abrirLink(String url) async {
+    final Uri uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } else {
+      throw 'Não foi possível abrir o link: $url';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -19,7 +33,7 @@ class LandingPage extends StatelessWidget {
           // ========== 🔴 FUNDO COM GRADIENTE ==========
           Container(
             decoration: BoxDecoration(
-              gradient: AppColors.landingGradient,  // Gradiente do tema
+              gradient: AppColors.landingGradient,
             ),
           ),
           
@@ -28,19 +42,19 @@ class LandingPage extends StatelessWidget {
             slivers: [
               // ========== 🎨 CABEÇALHO (APP BAR EXPANDIDA) ==========
               SliverAppBar(
-                expandedHeight: 320,      // Altura quando expandido
+                expandedHeight: 320,
                 floating: false,
-                pinned: true,             // Fica fixo no topo
+                pinned: true,
                 backgroundColor: Colors.transparent,
                 elevation: 0,
                 flexibleSpace: FlexibleSpaceBar(
                   title: Text(
-                    AppTexts.appName,     // Nome do app (do tema)
+                    AppTexts.appName,
                     style: TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.bold,
                       letterSpacing: 2,
-                      color: AppColors.accent,  // Cor dourada
+                      color: AppColors.accent,
                     ),
                   ),
                   centerTitle: true,
@@ -51,7 +65,7 @@ class LandingPage extends StatelessWidget {
                         end: Alignment.bottomCenter,
                         colors: [
                           Colors.black.withOpacity(0.9),
-                          AppColors.primary.withOpacity(0.3),  // Vermelho suave
+                          AppColors.primary.withOpacity(0.3),
                           Colors.black.withOpacity(0.9),
                         ],
                       ),
@@ -60,13 +74,12 @@ class LandingPage extends StatelessWidget {
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          // 🏋️ Ícone principal (halter)
                           Container(
                             padding: EdgeInsets.all(20),
                             decoration: BoxDecoration(
                               shape: BoxShape.circle,
                               border: Border.all(
-                                color: AppColors.accent,  // Borda dourada
+                                color: AppColors.accent,
                                 width: 3,
                               ),
                               boxShadow: [
@@ -80,12 +93,10 @@ class LandingPage extends StatelessWidget {
                             child: Icon(
                               Icons.fitness_center,
                               size: 65,
-                              color: AppColors.primary,  // Vermelho
+                              color: AppColors.primary,
                             ),
                           ),
                           SizedBox(height: 20),
-                          
-                          // 📝 Títulos principais
                           Text(
                             "SUA JORNADA",
                             style: TextStyle(
@@ -133,7 +144,6 @@ class LandingPage extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // 💬 Frase motivacional
                       _buildQuoteCard(
                         '"A dor que você sente hoje será a força que você terá amanhã."',
                       ),
@@ -191,18 +201,10 @@ class LandingPage extends StatelessWidget {
                             ),
                             SizedBox(height: 10),
                             Text(
-                              '''
-                              Somos mais do que uma academia, somos uma comunidade comprometida com o seu bem-estar 
-                              e evolução constante. A MINHA ACADEMIA PREMIUM nasceu com o propósito de transformar 
-                              vidas por meio do movimento, do exercício físico e da convivência. 
-                              Oferecemos um espaço moderno, dinâmico e com profissionais de ponta para auxiliar você a atingir 
-                              o seu potencial máximo. 
-                              Se você busca performance e evolução constante, este é o lugar!
-                              ''',
+                              'Somos mais do que uma academia, somos uma comunidade comprometida com o seu bem-estar e evolução constante...',
                               style: AppStyles.bodyMedium,
                             ),
                             SizedBox(height: 16),
-                            
                             Text(
                               'NOSSA MISSÃO',
                               style: TextStyle(
@@ -214,17 +216,10 @@ class LandingPage extends StatelessWidget {
                             ),
                             SizedBox(height: 10),
                             Text(
-                              '''
-                              Desejamos inspirar e facilitar a adoção de um estilo de vida mais ativo e saudável para todos que nos procuram.
-                              Buscamos ser mais que uma academia, queremos ser um centro de motivação e 
-                              acolhimento, onde você se sinta apoiado em cada etapa da sua jornada.
-                              Queremos que cada treino seja uma experiência positiva e 
-                              gratificante, que te inspire a se superar a cada dia. O seu sucesso é nossa maior recompensa.
-                              ''',
+                              'Desejamos inspirar e facilitar a adoção de um estilo de vida mais ativo e saudável...',
                               style: AppStyles.bodyMedium,
                             ),
                             SizedBox(height: 16),
-                            
                             Text(
                               'O QUE OFERECEMOS',
                               style: TextStyle(
@@ -246,7 +241,7 @@ class LandingPage extends StatelessWidget {
                       
                       SizedBox(height: 30),
                       
-                      // ========== ⭐ SEÇÃO 3: REFERÊNCIAS (INFLUENCIADORES) ==========
+                      // ========== ⭐ SEÇÃO 3: REFERÊNCIAS COM LINKS ==========
                       _buildSectionTitle('⭐ REFERÊNCIAS', Icons.people),
                       SizedBox(height: 12),
                       
@@ -256,28 +251,35 @@ class LandingPage extends StatelessWidget {
                       ),
                       SizedBox(height: 16),
                       
-                      _buildInfluencerCard(
+                      // Caroline Girvan
+                      _buildInfluencerCardWithLinks(
                         nome: 'CAROLINE GIRVAN',
                         icone: '💪',
                         descricao: 'Treinos intensos e completos',
-                        redes: 'YouTube | Instagram',
+                        urlYouTube: 'https://youtube.com/@carolinegirvan',
+                        urlInstagram: 'https://instagram.com/carolinegirvan',
                       ),
-                      _buildInfluencerCard(
+                      
+                      // Jeff Nippard
+                      _buildInfluencerCardWithLinks(
                         nome: 'JEFF NIPPARD',
                         icone: '📚',
                         descricao: 'Treino baseado em ciência',
-                        redes: 'YouTube | Instagram',
+                        urlYouTube: 'https://youtube.com/@jeffnippard',
+                        urlInstagram: 'https://instagram.com/jeffnippard',
                       ),
-                      _buildInfluencerCard(
+                      
+                      // Leandro Twin
+                      _buildInfluencerCardWithLinks(
                         nome: 'LEANDRO TWIN',
                         icone: '🇧🇷',
                         descricao: 'Conteúdo nacional sobre hipertrofia',
-                        redes: 'YouTube | Instagram',
+                        urlYouTube: 'https://youtube.com/@leandrotwin',
+                        urlInstagram: 'https://instagram.com/leandrotwin',
                       ),
                       
                       SizedBox(height: 20),
                       
-                      // 💡 Dica extra
                       Container(
                         width: double.infinity,
                         padding: EdgeInsets.all(16),
@@ -326,7 +328,7 @@ class LandingPage extends StatelessWidget {
                         width: double.infinity,
                         padding: EdgeInsets.all(25),
                         decoration: BoxDecoration(
-                          gradient: AppColors.premiumGradient,  // Gradiente dourado
+                          gradient: AppColors.premiumGradient,
                           borderRadius: BorderRadius.circular(20),
                           boxShadow: [
                             BoxShadow(
@@ -362,7 +364,6 @@ class LandingPage extends StatelessWidget {
                               width: double.infinity,
                               child: ElevatedButton.icon(
                                 onPressed: () {
-                                  // Vai para a tela de carregamento interativo
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -372,7 +373,7 @@ class LandingPage extends StatelessWidget {
                                 },
                                 icon: Icon(Icons.arrow_forward, size: 22),
                                 label: Text(
-                                  AppTexts.enterButton,  // "AWAKEN YOUR POWER"
+                                  AppTexts.enterButton,
                                   style: TextStyle(
                                     fontSize: 16,
                                     fontWeight: FontWeight.bold,
@@ -397,7 +398,6 @@ class LandingPage extends StatelessWidget {
                       
                       SizedBox(height: 40),
                       
-                      // 🏆 Frase final
                       Center(
                         child: Text(
                           '🏆 "O único treino ruim é o que não foi feito." 🏆',
@@ -423,10 +423,9 @@ class LandingPage extends StatelessWidget {
   }
 
   // ============================================
-  // 🛠️ WIDGETS AUXILIARES (COMPONENTES REUTILIZÁVEIS)
+  // 🛠️ WIDGETS AUXILIARES
   // ============================================
 
-  // 📌 Título das seções (ex: "🔥 VANTAGENS")
   Widget _buildSectionTitle(String titulo, IconData icone) {
     return Row(
       children: [
@@ -445,7 +444,6 @@ class LandingPage extends StatelessWidget {
     );
   }
 
-  // 💬 Card de frase motivacional
   Widget _buildQuoteCard(String quote) {
     return Container(
       width: double.infinity,
@@ -466,7 +464,6 @@ class LandingPage extends StatelessWidget {
     );
   }
 
-  // ✅ Card de benefício/vantagem
   Widget _buildBenefitCard({
     required String titulo,
     required String descricao,
@@ -480,7 +477,6 @@ class LandingPage extends StatelessWidget {
       ),
       child: Row(
         children: [
-          // Ícone com fundo dourado
           Container(
             padding: EdgeInsets.all(10),
             decoration: BoxDecoration(
@@ -515,7 +511,6 @@ class LandingPage extends StatelessWidget {
     );
   }
 
-  // ⚠️ Card de aviso/desvantagem
   Widget _buildWarningCard({
     required String titulo,
     required String descricao,
@@ -557,7 +552,6 @@ class LandingPage extends StatelessWidget {
     );
   }
 
-  // 📋 Item da lista "O que oferecemos"
   Widget _buildOfferItem(String texto) {
     return Padding(
       padding: EdgeInsets.only(bottom: 6),
@@ -568,12 +562,15 @@ class LandingPage extends StatelessWidget {
     );
   }
 
-  // 🌟 Card de influenciador/referência
-  Widget _buildInfluencerCard({
+  // ============================================
+  // 🌟 CARD DE INFLUENCIADOR COM LINKS CLICÁVEIS
+  // ============================================
+  Widget _buildInfluencerCardWithLinks({
     required String nome,
     required String icone,
     required String descricao,
-    required String redes,
+    required String urlYouTube,
+    required String urlInstagram,
   }) {
     return Container(
       margin: EdgeInsets.only(bottom: 12),
@@ -581,48 +578,107 @@ class LandingPage extends StatelessWidget {
       decoration: AppStyles.cardDecoration(
         backgroundColor: AppColors.cardBackground,
       ),
-      child: Row(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Ícone circular do influenciador
-          Container(
-            width: 50,
-            height: 50,
-            decoration: BoxDecoration(
-              gradient: AppColors.premiumGradient,
-              borderRadius: BorderRadius.circular(25),
-            ),
-            child: Center(
-              child: Text(icone, style: TextStyle(fontSize: 24)),
-            ),
+          Row(
+            children: [
+              Container(
+                width: 50,
+                height: 50,
+                decoration: BoxDecoration(
+                  gradient: AppColors.premiumGradient,
+                  borderRadius: BorderRadius.circular(25),
+                ),
+                child: Center(
+                  child: Text(icone, style: TextStyle(fontSize: 24)),
+                ),
+              ),
+              SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      nome,
+                      style: TextStyle(
+                        fontSize: 14,
+                        fontWeight: FontWeight.bold,
+                        color: AppColors.textPrimary,
+                      ),
+                    ),
+                    SizedBox(height: 2),
+                    Text(
+                      descricao,
+                      style: TextStyle(fontSize: 11, color: AppColors.textSecondary),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
-          SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  nome,
-                  style: TextStyle(
-                    fontSize: 14,
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.textPrimary,
-                  ),
+          SizedBox(height: 12),
+          
+          // Botões de links
+          Row(
+            children: [
+              // Botão YouTube
+              Expanded(
+                child: _buildLinkButton(
+                  icone: Icons.play_circle_filled,
+                  cor: Colors.red,
+                  texto: 'YouTube',
+                  url: urlYouTube,
                 ),
-                SizedBox(height: 2),
-                Text(
-                  descricao,
-                  style: TextStyle(fontSize: 11, color: AppColors.textSecondary),
+              ),
+              SizedBox(width: 12),
+              
+              // Botão Instagram
+              Expanded(
+                child: _buildLinkButton(
+                  icone: Icons.camera_alt,
+                  cor: Colors.purple,
+                  texto: 'Instagram',
+                  url: urlInstagram,
                 ),
-                SizedBox(height: 2),
-                Text(
-                  redes,
-                  style: TextStyle(fontSize: 9, color: AppColors.accent),
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
-          Icon(Icons.chevron_right, color: AppColors.accent, size: 20),
         ],
+      ),
+    );
+  }
+
+  // ============================================
+  // 🔘 BOTÃO DE LINK INDIVIDUAL
+  // ============================================
+  Widget _buildLinkButton({
+    required IconData icone,
+    required Color cor,
+    required String texto,
+    required String url,
+  }) {
+    return InkWell(
+      onTap: () => _abrirLink(url),
+      borderRadius: BorderRadius.circular(30),
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 8),
+        decoration: BoxDecoration(
+          color: cor.withOpacity(0.2),
+          borderRadius: BorderRadius.circular(30),
+          border: Border.all(color: cor.withOpacity(0.5)),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(icone, size: 16, color: cor),
+            SizedBox(width: 6),
+            Text(
+              texto,
+              style: TextStyle(fontSize: 11, color: cor),
+            ),
+          ],
+        ),
       ),
     );
   }
