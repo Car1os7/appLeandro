@@ -15,6 +15,8 @@
 
 ## 📱 Sobre o Projeto
 
+## Alunos: Carlos Bertoldo, Kaio Lourival, Pedro Henrique, Gabriel Ribeiro e Luan Gabriel
+
 **Minha Academia Premium** é um aplicativo completo desenvolvido com **Flutter** que tem como missão principal **motivar e guiar pessoas** que desejam iniciar ou melhorar sua jornada no mundo fitness e saudável.
 O app foi pensado para resolver um problema comum: muitas pessoas querem começar a treinar, mas não sabem por onde começar, não têm motivação suficiente ou se sentem perdidas na academia.
 
